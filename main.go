@@ -14,6 +14,6 @@ func main() {
 	// route
 	app := routes.New()
 
-	// start the server on port 3000
-	log.Fatal(app.Listen(":3000"))
+	// start the server on port 3001
+	log.Fatal(app.Listen(":3001"))
 }

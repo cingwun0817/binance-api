@@ -1,0 +1,21 @@
+name: Go
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+
+  delpoy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ secrets.BINANCE_SERVER }}
+        username: ${{ secrets.BINANCE_USERNAME }}
+        key: ${{ secrets.BINANCE_KEY }}
+        port: 22
+        source: "bin/*"
+        target: "/opt/binance-api"
