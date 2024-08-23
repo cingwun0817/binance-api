@@ -19,3 +19,12 @@ jobs:
         port: 22
         source: "bin/*"
         target: "/opt/binance-api"
+  
+    - uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.BINANCE_SERVER }}
+        username: ${{ secrets.BINANCE_USERNAME }}
+        key: ${{ secrets.BINANCE_KEY }}
+        port: 22
+        script: systemctl restart binance-api.service
+

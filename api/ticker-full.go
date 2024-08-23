@@ -73,10 +73,6 @@ func GetTickerFull(c *fiber.Ctx) error {
 		data = append(data, *mapData[symbol])
 	}
 
-	// for _, rowdata := range mapData {
-	// 	data = append(data, *rowdata)
-	// }
-
 	return c.Status(200).JSON(fiber.Map{
 		"code":    200,
 		"message": "success",
