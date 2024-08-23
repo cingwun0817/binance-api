@@ -13,7 +13,7 @@ type TickerFull struct {
 	// Hour               int     `json:"hour"`
 	Symbol string `json:"symbol"`
 	// PriceChangePercent float64 `json:"priceChangePercent"`
-	Items []TickerFullItem
+	Items []TickerFullItem `json:"items"`
 }
 
 type TickerFullItem struct {
@@ -31,7 +31,7 @@ func GetTickerFull(c *fiber.Ctx) error {
 	windowSize := query["windowSize"]
 	pDate := query["date"]
 
-	rows, err := common.Db.QueryContext(ctx, "SELECT `date`, `hour`, `symbol`, `priceChangePercent` FROM `binance`.`ticker_full` WHERE `windowSize` = ? AND `date` >= ?", windowSize, pDate)
+	rows, err := common.Db.QueryContext(ctx, "SELECT `date`, `hour`, `symbol`, `priceChangePercent` FROM `binance`.`ticker_full` WHERE `windowSize` = ? AND `date` >= ?;", windowSize, pDate)
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{
 			"code":    500,
@@ -39,6 +39,7 @@ func GetTickerFull(c *fiber.Ctx) error {
 		})
 	}
 
+	var symbols []string
 	for rows.Next() {
 		var date, symbol string
 		var hour int
@@ -52,6 +53,8 @@ func GetTickerFull(c *fiber.Ctx) error {
 				Symbol: symbol,
 				Items:  []TickerFullItem{},
 			}
+
+			symbols = append(symbols, symbol)
 		}
 
 		var item TickerFullItem
@@ -59,16 +62,20 @@ func GetTickerFull(c *fiber.Ctx) error {
 		if windowSize == "1d" {
 			item.Name = date
 		} else {
-			item.Name = fmt.Sprintf("%d", hour)
+			item.Name = fmt.Sprintf("%s.%d", date, hour)
 		}
 		item.PriceChangePercent = priceChangePercent
 
 		mapData[symbol].Items = append(mapData[symbol].Items, item)
 	}
 
-	for _, rowdata := range mapData {
-		data = append(data, *rowdata)
+	for _, symbol := range symbols {
+		data = append(data, *mapData[symbol])
 	}
+
+	// for _, rowdata := range mapData {
+	// 	data = append(data, *rowdata)
+	// }
 
 	return c.Status(200).JSON(fiber.Map{
 		"code":    200,
