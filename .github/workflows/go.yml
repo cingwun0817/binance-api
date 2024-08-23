@@ -26,5 +26,5 @@ jobs:
         username: ${{ secrets.BINANCE_USERNAME }}
         key: ${{ secrets.BINANCE_KEY }}
         port: 22
-        script: systemctl restart binance-api.service
+        script: sudo systemctl restart binance-api.service
 
