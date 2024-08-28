@@ -4,6 +4,7 @@ import (
 	"binance-api/internal/common"
 	"context"
 	"fmt"
+	"sort"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -13,7 +14,8 @@ type TickerFull struct {
 	// Hour               int     `json:"hour"`
 	Symbol string `json:"symbol"`
 	// PriceChangePercent float64 `json:"priceChangePercent"`
-	Items []TickerFullItem `json:"items"`
+	Items                  []TickerFullItem `json:"items"`
+	LastPriceChangePercent float64          `json:"lastPriceChangePercent"`
 }
 
 type TickerFullItem struct {
@@ -67,11 +69,16 @@ func GetTickerFull(c *fiber.Ctx) error {
 		item.PriceChangePercent = priceChangePercent
 
 		mapData[symbol].Items = append(mapData[symbol].Items, item)
+		mapData[symbol].LastPriceChangePercent = priceChangePercent
 	}
 
 	for _, symbol := range symbols {
 		data = append(data, *mapData[symbol])
 	}
+
+	sort.Slice(data, func(i, j int) bool {
+		return data[i].LastPriceChangePercent > data[j].LastPriceChangePercent
+	})
 
 	return c.Status(200).JSON(fiber.Map{
 		"code":    200,
