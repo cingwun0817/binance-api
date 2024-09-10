@@ -13,6 +13,7 @@ func New() *fiber.App {
 	app.Use(cors.New())
 
 	app.Get("/ticker/full", api.GetTickerFull)
+	app.Get("/ma", api.GetMa)
 
 	return app
 }
