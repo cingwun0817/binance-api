@@ -4,7 +4,6 @@ import (
 	"binance-api/internal/common"
 	"binance-api/internal/model"
 	"context"
-	"fmt"
 	"sort"
 	"strings"
 
@@ -51,8 +50,6 @@ func GetMa(c *fiber.Ctx) error {
 			}
 
 			data = append(data, coin)
-
-			fmt.Println(coin)
 		}
 	}
 
