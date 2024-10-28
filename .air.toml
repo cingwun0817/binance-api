@@ -12,7 +12,7 @@ tmp_dir = "tmp"
   exclude_regex = ["_test.go"]
   exclude_unchanged = false
   follow_symlink = false
-  full_bin = "CONFIG_PATH=/home/leowang/projects/binance-api go run main.go"
+  full_bin = "CONFIG_PATH=/Users/leowang/projects/binance-api go run main.go"
   include_dir = []
   include_ext = ["go", "tpl", "tmpl", "html"]
   include_file = []

@@ -3,6 +3,7 @@ package api
 import (
 	"binance-api/internal/common"
 	"context"
+	"database/sql"
 	"fmt"
 	"sort"
 
@@ -32,8 +33,15 @@ func GetTickerFull(c *fiber.Ctx) error {
 	query := c.Queries()
 	windowSize := query["windowSize"]
 	pDate := query["date"]
+	pHour := query["hour"]
 
-	rows, err := common.Db.QueryContext(ctx, "SELECT `date`, `hour`, `symbol`, `priceChangePercent` FROM `binance`.`ticker_full` WHERE `windowSize` = ? AND `date` >= ?;", windowSize, pDate)
+	var rows *sql.Rows
+	var err error
+	if pHour == "" {
+		rows, err = common.Db.QueryContext(ctx, "SELECT `date`, `hour`, `symbol`, `priceChangePercent` FROM `binance`.`ticker_full` WHERE `windowSize` = ? AND `date` >= ?;", windowSize, pDate)
+	} else {
+		rows, err = common.Db.QueryContext(ctx, "SELECT `date`, `hour`, `symbol`, `priceChangePercent` FROM `binance`.`ticker_full` WHERE `windowSize` = ? AND `date` >= ? AND `hour` = ?;", windowSize, pDate, pHour)
+	}
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{
 			"code":    500,
