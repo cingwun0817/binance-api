@@ -38,9 +38,9 @@ func GetTickerFull(c *fiber.Ctx) error {
 	var rows *sql.Rows
 	var err error
 	if pHour == "" {
-		rows, err = common.Db.QueryContext(ctx, "SELECT `date`, `hour`, `symbol`, `priceChangePercent` FROM `binance`.`ticker_full` WHERE `windowSize` = ? AND `date` = ?;", windowSize, pDate)
+		rows, err = common.Db.QueryContext(ctx, "SELECT `date`, `hour`, `symbol`, `priceChangePercent` FROM `binance`.`ticker_full` WHERE `priceChangePercent` != 0 AND `windowSize` = ? AND `date` = ?;", windowSize, pDate)
 	} else {
-		rows, err = common.Db.QueryContext(ctx, "SELECT `date`, `hour`, `symbol`, `priceChangePercent` FROM `binance`.`ticker_full` WHERE `windowSize` = ? AND `date` = ? AND `hour` = ?;", windowSize, pDate, pHour)
+		rows, err = common.Db.QueryContext(ctx, "SELECT `date`, `hour`, `symbol`, `priceChangePercent` FROM `binance`.`ticker_full` WHERE `priceChangePercent` != 0 AND `windowSize` = ? AND `date` = ? AND `hour` = ?;", windowSize, pDate, pHour)
 	}
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{
